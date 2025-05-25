@@ -15,19 +15,11 @@ const chipVersions = [
 
 export const useDefaultStore = defineStore('default', () => {
 
-    const wsmgr = reactive({})
-
     const wifi_info = reactive({
         isOnline: false,
         host: "",
-        use_user_host: "",
         enable_custom_address: false,
         custom_address: "",
-        user_host: "",
-        sta_ssid: "",
-        sta_pass: "",
-        username: "murasame",
-        password: "0d00",
         wifi_mode: 0,
         SSID: "",
         RSSI: 0,
@@ -64,7 +56,7 @@ export const useDefaultStore = defineStore('default', () => {
     const computed_data = reactive({
         package_version_str: computed(() => chipVersions[device_info.package_version]),
         chip_version_str: computed(() => `v${parseInt(device_info.chip_version / 100)}.${device_info.chip_version % 10}`),
-        firmware_tree: computed(() => `https://github.com/xizeyoupan/magic-wand/tree/${device_info.git_commit_id}`),
+        firmware_tree: computed(() => `https://github.com/xizeyoupan/esp-light/tree/${device_info.git_commit_id}`),
         cpu_freq_str: computed(() => `${device_info.cpu_freq / 1000000}Mhz`),
         used_men_percent: computed(() => {
             return (stat_data.total_allocated_bytes / (stat_data.total_allocated_bytes + stat_data.total_free_bytes) * 100).toFixed(2)
@@ -92,15 +84,38 @@ export const useDefaultStore = defineStore('default', () => {
     }
 
     const user_config = reactive({
-        ws2812_gpio_num: { data: -1, display: true, type: 'number' },
-        mpu_sda_gpio_num: { data: -1, display: true, type: 'number' },
-        mpu_scl_gpio_num: { data: -1, display: true, type: 'number' },
-        enable_imu_det: { data: 0, display: false, type: 'number' },
-        enable_ws_log: { data: 0, display: true, type: 'number' },
+        key_gpio_num: 0,
+        pwm_gpio_num: 0,
+
+        brightness_input: 0, // 0-100
+        frequency: 0,
+        pwm_duty_min: 0,
+        pwm_duty_max: 0,
+        boot_action: 0, // 0: keep, 1: fixed,
+        boot_brightness: 0,
+        output_func: 0, // 0: linear, 1: gamma
+        gamma_value: 0,
+        duty_output: 0,
+
+        username: "",
+        password: "",
+        mdns_host_name: "",
+        wifi_ap_ssid: "",
+        wifi_ap_pass: "",
+        wifi_ssid: "",
+        wifi_pass: "",
+        wifi_scan_list_size: 0,
+        wifi_connect_max_retry: 0,
+        ws_recv_buf_size: 0,
+        ws_send_buf_size: 0,
+        msg_buf_recv_size: 0,
+        msg_buf_send_size: 0,
+        broker_address_uri: "",
+        mqtt_client_id: "",
+        mqtt_topic: "",
     })
 
-
     return {
-        wifi_list, wifi_info, device_info, computed_data, wsmgr, stat_data, sort_task_list, user_config,
+        wifi_list, wifi_info, device_info, computed_data, stat_data, sort_task_list, user_config,
     }
 })

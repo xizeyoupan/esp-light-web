@@ -3,6 +3,7 @@ import { createI18n } from 'vue-i18n'
 const defaultLocale = 'zh-CN'
 
 import zhCN from './locales/zh-CN'
+import en from './locales/en'
 
 const loadLocaleMessages = async (locale) => {
     switch (locale) {
@@ -22,6 +23,7 @@ const i18n = createI18n({
     fallbackLocale: 'en',
     messages: {
         'zh-CN': zhCN,
+        'en': en
     }
 })
 

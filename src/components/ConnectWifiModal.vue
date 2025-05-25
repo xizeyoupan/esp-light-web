@@ -54,7 +54,7 @@
               </div>
               <input
                 v-model="default_store.wifi_info.input_password"
-                type="text"
+                type="password"
                 class="w-full p-2 border border-gray-300 rounded-md"
               >
 
@@ -88,27 +88,17 @@
 </template>
 
 <script setup>
-import { NoSymbolIcon, WifiIcon } from '@heroicons/vue/20/solid'
 import { useDefaultStore } from '../store/defaultStore.js'
-import { useI18n } from 'vue-i18n'
-import { ref, useTemplateRef } from 'vue'
+import { i18n } from '../i18n.js'
 import { Dialog, Switch, TransitionRoot, DialogOverlay, TransitionChild, DialogPanel, DialogTitle } from '@headlessui/vue'
-import { connect_device } from '../util.js'
 import { wsmgr } from '../plugins/ws.js'
 import pinia from '../store/index.js'
 import { toast } from '../plugins/toast.js'
 
+const { showModal } = defineProps({showModal: Boolean})
+defineEmits(['exit'])
 
 const default_store = useDefaultStore(pinia)
-
-
-const { showModal } = defineProps(
-    {
-        showModal: Boolean
-    }
-)
-
-defineEmits(['exit'])
-const { t } = useI18n()
+const t = i18n.global.t
 
 </script>

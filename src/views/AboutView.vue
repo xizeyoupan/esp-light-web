@@ -34,17 +34,6 @@ const enable_dev_mode = async () => {
     dev_click_cnt--
 }
 
-toast(t('toast.loading'), 'info')
-let time_interval_obj
-time_interval_obj = setInterval(() => {
-    if (default_store.device_info.cpu_freq) {
-        clearInterval(time_interval_obj)
-        return
-    }
-    if (check_not_online()) return
-    wsmgr.get_device_info()
-}, 1000)
-
 </script>
 
 <template>
@@ -80,11 +69,11 @@ time_interval_obj = setInterval(() => {
       </span>
       <a
         target="_blank"
-        href="https://github.com/xizeyoupan/magic-wand"
+        href="https://github.com/xizeyoupan/esp-light"
         class="inline-flex items-center space-x-2"
       >
         <img
-          src="https://img.shields.io/badge/xizeyoupan-magic--wand-brightgreen"
+          src="https://img.shields.io/badge/xizeyoupan-esp--light-brightgreen"
           alt="GitHub Repo"
         >
       </a>
@@ -134,7 +123,7 @@ time_interval_obj = setInterval(() => {
       </span>
       <a
         target="_blank"
-        :href="`https://github.com/xizeyoupan/magic-wand-web/tree/${web_version}`"
+        :href="`https://github.com/xizeyoupan/esp-light-web/tree/${web_version}`"
         class="text-blue-600 hover:underline break-all"
       >
         {{ web_version }}

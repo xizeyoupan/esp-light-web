@@ -131,7 +131,7 @@ get_wifi_info()
   </h2>
 
   <div class="flex justify-between items-center mb-2">
-    <div>数量：{{ default_store.wifi_list.length }}</div>
+    <div>{{ t('wifi_info_view.count') }}: {{ default_store.wifi_list.length }}</div>
 
     <button
       class="px-4 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"

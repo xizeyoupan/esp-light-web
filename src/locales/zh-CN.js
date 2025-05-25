@@ -1,6 +1,3 @@
-import { compile } from "vue"
-import { toast } from "../plugins/toast"
-
 export default {
     app_name: 'ESP灯后台',
     fresh: '刷新',
@@ -15,6 +12,13 @@ export default {
     language: "设置语言",
     device: {
         connected: "已连接",
+    },
+    confirm_dialog: {
+        confirm: "确定",
+        cancel: "取消",
+        save_confirm: "保存配置，是否继续？（部分配置需重启后生效）",
+        reboot_confirm: "重启设备后将暂时断开连接，是否继续？",
+        reset_confirm: "重置配置，是否继续？",
     },
     connect_esp_modal: {
         title: "设置魔杖地址",
@@ -71,6 +75,7 @@ export default {
         ip: "本机IP地址",
         gw: "网关",
         netmask: "子网掩码",
+        count: "数量",
     },
     state_view: {
         memory_statistics: "内存统计",
@@ -83,5 +88,50 @@ export default {
         task_name: "名称",
         task_state: "状态",
         task_high_water_mark: "最高水位",
+    },
+    config: {
+        title: "配置",
+        save: "保存",
+        import: "导入",
+        export: "导出",
+        reset: "重置",
+        reboot: "重启",
+
+        pwm_gpio_num: "输出 GPIO 引脚",
+        key_gpio_num: "按键 GPIO 引脚",
+        light: "灯光设置",
+        brightness: "亮度",
+        freq: "控制频率",
+        pwm_min: "亮度最小阈值",
+        pwm_max: "亮度最大阈值",
+        boot_action: "上电后灯光",
+        fixed: "固定",
+        boot_keep: "保持掉电时状态",
+        boot_brightness: "上电后亮度",
+        output: "输出特性",
+        linear: "线性",
+        gamma: "伽马（指数）",
+        gamma_value: "伽马值",
+        duty_output: "实际输出",
+
+        bafayun: "巴法云设置",
+        addr: "服务器地址",
+        client_id: "客户端 ID",
+        topic: "主题",
+
+        other: "其他设置",
+        ws_user: "WebSocket 用户名",
+        ws_pass: "WebSocket 密码",
+        mdns: "mDNS 名称",
+        wifi_ap_name: "AP 模式名称",
+        wifi_ap_pass: "AP 模式密码",
+        wifi_sta_name: "WiFi 名称",
+        wifi_sta_pass: "WiFi 密码",
+        wifi_scan_max_size: "WiFi 最大扫描数量",
+        wifi_retries: "WiFi 最多重试次数",
+        ws_recv_max: "WebSocket 最大接收长度",
+        ws_send_max: "WebSocket 最大发送长度",
+        ws_recv_queue: "WebSocket 接收队列长度",
+        ws_send_queue: "WebSocket 发送队列长度"
     }
 }

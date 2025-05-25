@@ -2,6 +2,7 @@ import { toast } from './toast.js'
 import { useDefaultStore } from '../store/defaultStore.js'
 import { i18n } from '../i18n.js'
 import pinia from '../store/index.js'
+import { get_ws_username, get_ws_password, set_ws_username, set_ws_password, set_mdns_host_name, get_ledc_data } from '../util.js'
 
 const default_store = useDefaultStore(pinia)
 const t = i18n.global.t
@@ -47,16 +48,33 @@ class WebSocketManager {
         this.connect()
     }
 
-    connect() {
+    async connect() {
         this.del()
-        this.ws = new WebSocket(this.url + `?token=${default_store.wifi_info.username}:${default_store.wifi_info.password}`)
+
+        const ws_username = await get_ws_username()
+        const ws_password = await get_ws_password()
+        this.ws = new WebSocket(this.url + `?token=${ws_username}:${ws_password}`)
         this.ws.binaryType = "arraybuffer"
+
+        toast(t('toast.loading'), 'info')
+        let time_interval_obj
+        time_interval_obj = setInterval(() => {
+            if (default_store.device_info.cpu_freq && default_store.user_config.username) {
+                clearInterval(time_interval_obj)
+                return
+            }
+
+            if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+                this.get_device_info()
+                this.get_user_config()
+            }
+
+        }, 2000)
 
         this.ws.onopen = () => {
             console.log("WebSocket 连接成功")
             default_store.wifi_info.isOnline = true
             this.heartCheck.start()
-            this.get_config()
         }
 
         this.ws.onmessage = (event) => {
@@ -87,6 +105,12 @@ class WebSocketManager {
                         default_store.stat_data.task_list = data.data.task_list.sort((a, b) => a.xTaskNumber - b.xTaskNumber)
                         Object.assign(default_store.stat_data, data.data)
                         break
+                    case 'user_config':
+                        Object.assign(default_store.user_config, data.data)
+                        set_ws_username(default_store.user_config.username)
+                        set_ws_password(default_store.user_config.password)
+                        set_mdns_host_name(default_store.user_config.mdns_host_name)
+                        break
                     default:
                         break
                     }
@@ -114,7 +138,7 @@ class WebSocketManager {
         setTimeout(() => {
             console.log("正在重连...")
             this.connect()
-        }, 1000) // 1秒后重连
+        }, 5000) // 10秒后重连
     }
 
     sendMessage(message) {
@@ -150,16 +174,20 @@ class WebSocketManager {
         console.log("WebSocketManager 资源清理完毕")
     }
 
-    commit_config() {
-
+    quest_reboot() {
+        this.sendMessage(new QuestBody('reboot').toText())
     }
 
-    get_config() {
-
+    save_user_config() {
+        this.sendMessage(
+            new QuestBody(
+                'update_user_config',
+                Object.assign({}, default_store.user_config,)
+            ).toText())
     }
 
-    reset_config() {
-
+    reset_user_config() {
+        this.sendMessage(new QuestBody('reset_user_config').toText())
     }
 
     connect_wifi() {
@@ -177,6 +205,10 @@ class WebSocketManager {
         this.sendMessage(new QuestBody('get_device_info').toText())
     }
 
+    get_user_config() {
+        this.sendMessage(new QuestBody('get_user_config').toText())
+    }
+
     get_wifi_info() {
         this.sendMessage(new QuestBody('get_wifi_info').toText())
     }
@@ -187,6 +219,14 @@ class WebSocketManager {
 
     get_state_info() {
         this.sendMessage(new QuestBody('get_state_info').toText())
+    }
+
+    update_ledc() {
+        this.sendMessage(
+            new QuestBody(
+                'update_ledc',
+                get_ledc_data(),
+            ).toText())
     }
 
 }
