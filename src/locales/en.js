@@ -96,6 +96,8 @@ export default {
         export: "Export",
         reset: "Reset",
         reboot: "Reboot",
+        ota: "Firmware Upgrade",
+        ota_success: "Firmware upgrade successful, waiting for reboot",
 
         pwm_gpio_num: "Output GPIO Pin",
         key_gpio_num: "Button GPIO Pin",

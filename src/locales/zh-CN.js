@@ -96,6 +96,8 @@ export default {
         export: "导出",
         reset: "重置",
         reboot: "重启",
+        ota: "固件升级",
+        ota_success: "固件升级成功，等待重启",
 
         pwm_gpio_num: "输出 GPIO 引脚",
         key_gpio_num: "按键 GPIO 引脚",

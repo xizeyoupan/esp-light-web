@@ -51,6 +51,13 @@
       >
         {{ t('config.reboot') }}
       </button>
+      <button
+        class="px-3 py-1 bg-pink-400 hover:bg-pink-500 text-white rounded"
+        @click="upload_ota"
+      >
+        {{ t('config.ota') }}
+      </button>
+      <ProgressDialog ref="progressRef" />
     </div>
 
     <div>
@@ -345,13 +352,18 @@
 <script setup>
 import { ref } from 'vue'
 import { i18n } from '../i18n.js'
+import { api } from '../api.js'
 import { wsmgr } from '../plugins/ws.js'
 import { useDefaultStore } from '../store/defaultStore.js'
 import ConfirmDialog from '../components/ConfirmDialog.vue'
+import ProgressDialog from '../components/ProgressDialog.vue'
+import { check_not_online } from '../util.js'
+import { toast } from '../plugins/toast.js'
 const t = i18n.global.t
 
 const default_store = useDefaultStore()
 const confirmRef = ref()
+const progressRef = ref()
 
 const export_user_config = () => {
     const data = {
@@ -400,6 +412,71 @@ const import_user_config = async (file) => {
     })
 
     input.click()
+}
+
+const upload_ota = async () => {
+    if (check_not_online()) return
+    const input = document.createElement('input')
+    input.type = 'file'
+    input.accept = '.bin'
+    input.style.display = 'none'
+
+    input.addEventListener('change', async function (event) {
+        const file = event.target.files[0]
+        if (!file) return
+
+        const reader = new FileReader()
+
+        reader.onload = async function (e) {
+            try {
+                const binaryData = e.target.result
+                const xhr = new XMLHttpRequest()
+                xhr.open("POST", `${default_store.wifi_info.host}/upload`)
+                xhr.timeout = 60000
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        console.log('OTA 上传成功:', xhr.responseText)
+                        setTimeout(() => progressRef.value.hide(), 500)
+                        toast(t('config.ota_success'), 'success')
+                    } else {
+                        console.error('OTA 上传失败:', xhr.status, xhr.statusText)
+                        setTimeout(() => progressRef.value.hide(), 500)
+                    }
+                }
+
+                xhr.onerror = function () {
+                    console.error('网络错误或服务器不可达')
+                    setTimeout(() => progressRef.value.hide(), 500)
+                }
+
+                xhr.ontimeout = function () {
+                    console.error('请求超时')
+                    setTimeout(() => progressRef.value.hide(), 500)
+                }
+
+                xhr.upload.onprogress = function (event) {
+                    if (event.lengthComputable) {
+                        const percentComplete = (event.loaded / event.total) * 100
+                        onProgress(percentComplete.toFixed(2))
+                    }
+                }
+                xhr.send(binaryData)
+
+            } catch (error) {
+                console.error('OTA 上传失败:', error)
+                setTimeout(() => progressRef.value.hide(), 500)
+            }
+        }
+
+        reader.readAsArrayBuffer(file)
+    })
+
+    input.click()
+}
+
+function onProgress(i) {
+    progressRef.value.show(0, 'Uploading OTA...')
+    progressRef.value.update(i, `Uploading`)
 }
 
 </script>

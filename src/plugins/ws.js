@@ -58,6 +58,7 @@ class WebSocketManager {
 
         toast(t('toast.loading'), 'info')
         let time_interval_obj
+        default_store.device_info.cpu_freq = 0
         time_interval_obj = setInterval(() => {
             if (default_store.device_info.cpu_freq && default_store.user_config.username) {
                 clearInterval(time_interval_obj)
