@@ -230,6 +230,14 @@ class WebSocketManager {
             ).toText())
     }
 
+    register_ha_entity() {
+        this.sendMessage(new QuestBody('register_ha_entity').toText())
+    }
+
+    remove_ha_entity() {
+        this.sendMessage(new QuestBody('remove_ha_entity').toText())
+    }
+
 }
 
 export let wsmgr = new WebSocketManager()

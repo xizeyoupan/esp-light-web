@@ -7,7 +7,7 @@
     <div class="flex space-x-2">
       <ConfirmDialog ref="confirmRef" />
       <button
-        class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded"
+        class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded"
         @click="async () => {
           const ok = await confirmRef.show(t('confirm_dialog.save_confirm'))
           if (ok) {
@@ -18,19 +18,19 @@
         {{ t('config.save') }}
       </button>
       <button
-        class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded"
+        class="px-3 py-1 bg-cyan-600 hover:bg-cyan-700 text-white rounded"
         @click="import_user_config"
       >
         {{ t('config.import') }}
       </button>
       <button
-        class="px-3 py-1 bg-yellow-600 hover:bg-yellow-700 text-white rounded"
+        class="px-3 py-1 bg-teal-600 hover:bg-teal-700 text-white rounded"
         @click="export_user_config"
       >
         {{ t('config.export') }}
       </button>
       <button
-        class="px-3 py-1 bg-gray-400 hover:bg-gray-500 text-white rounded"
+        class="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded"
         @click="async () => {
           const ok = await confirmRef.show(t('confirm_dialog.reset_confirm'))
           if (ok) {
@@ -41,7 +41,7 @@
         {{ t('config.reset') }}
       </button>
       <button
-        class="px-3 py-1 bg-purple-400 hover:bg-purple-500 text-white rounded"
+        class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded"
         @click="async () => {
           const ok = await confirmRef.show(t('confirm_dialog.reboot_confirm'))
           if (ok) {
@@ -52,7 +52,7 @@
         {{ t('config.reboot') }}
       </button>
       <button
-        class="px-3 py-1 bg-pink-400 hover:bg-pink-500 text-white rounded"
+        class="px-3 py-1 bg-lime-600 hover:bg-lime-700 text-white rounded"
         @click="upload_ota"
       >
         {{ t('config.ota') }}
@@ -199,6 +199,7 @@
           <input
             v-model="default_store.user_config.mqtt_client_id"
             class="border rounded px-2 py-1 w-64"
+            type="password"
           >
         </div>
         <div class="flex items-center justify-between">
@@ -207,6 +208,72 @@
             v-model="default_store.user_config.mqtt_topic"
             class="border rounded px-2 py-1 w-64"
           >
+        </div>
+      </div>
+    </div>
+
+
+    <div>
+      <h3 class="text-xl font-semibold border-b pb-1">
+        {{ t('config.ha') }}
+      </h3>
+      <div class="space-y-2 mt-2">
+        <div class="flex items-center justify-between">
+          <label>{{ t('config.addr') }}</label>
+          <input
+            v-model="default_store.user_config.ha_broker_address"
+            class="border rounded px-2 py-1 w-64"
+          >
+        </div>
+        <div class="flex items-center justify-between">
+          <label>{{ t('config.username') }}</label>
+          <input
+            v-model="default_store.user_config.ha_broker_username"
+            class="border rounded px-2 py-1 w-64"
+          >
+        </div>
+        <div class="flex items-center justify-between">
+          <label>{{ t('config.password') }}</label>
+          <input
+            v-model="default_store.user_config.ha_broker_password"
+            class="border rounded px-2 py-1 w-64"
+          >
+        </div>
+        <div class="flex items-center justify-between">
+          <label>{{ t('config.ha_entity_name') }}</label>
+          <input
+            v-model="default_store.user_config.ha_entity_name"
+            class="border rounded px-2 py-1 w-64"
+          >
+        </div>
+        <div class="flex items-center justify-between">
+          <label>{{ t('config.ha_unique_id') }}</label>
+          <input
+            v-model="default_store.user_config.ha_unique_id"
+            class="border rounded px-2 py-1 w-64"
+          >
+        </div>
+        <div class="flex items-center justify-between">
+          <label>{{ t('config.ha_discovery_prefix') }}</label>
+          <input
+            v-model="default_store.user_config.ha_discovery_prefix"
+            class="border rounded px-2 py-1 w-64"
+          >
+        </div>
+
+        <div class="flex items-center justify-around">
+          <button
+            class="px-3 py-1 bg-blue-400 hover:bg-blue-500 text-white rounded"
+            @click="wsmgr.register_ha_entity()"
+          >
+            {{ t('config.register') }}
+          </button>
+          <button
+            class="px-3 py-1 bg-blue-400 hover:bg-blue-500 text-white rounded"
+            @click="wsmgr.remove_ha_entity()"
+          >
+            {{ t('config.remove') }}
+          </button>
         </div>
       </div>
     </div>
@@ -428,44 +495,42 @@ const upload_ota = async () => {
         const reader = new FileReader()
 
         reader.onload = async function (e) {
-            try {
-                const binaryData = e.target.result
-                const xhr = new XMLHttpRequest()
-                xhr.open("POST", `${default_store.wifi_info.host}/upload`)
-                xhr.timeout = 60000
-                xhr.onload = function () {
-                    if (xhr.status === 200) {
-                        console.log('OTA 上传成功:', xhr.responseText)
-                        setTimeout(() => progressRef.value.hide(), 500)
-                        toast(t('config.ota_success'), 'success')
-                    } else {
-                        console.error('OTA 上传失败:', xhr.status, xhr.statusText)
-                        setTimeout(() => progressRef.value.hide(), 500)
-                    }
+            const binaryData = e.target.result
+            const xhr = new XMLHttpRequest()
+            const url = `${default_store.wifi_info.host}/upload?token=${default_store.user_config.username}:${default_store.user_config.password}`
+            xhr.open("POST", url)
+            xhr.timeout = 60000
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    console.log('OTA 上传成功:', xhr.responseText)
+                    toast(t('config.ota_success'), 'success')
+                } else {
+                    toast(t('config.ota_error'), 'error')
+                    console.error('OTA 上传失败:', xhr.status, xhr.statusText)
                 }
 
-                xhr.onerror = function () {
-                    console.error('网络错误或服务器不可达')
-                    setTimeout(() => progressRef.value.hide(), 500)
-                }
-
-                xhr.ontimeout = function () {
-                    console.error('请求超时')
-                    setTimeout(() => progressRef.value.hide(), 500)
-                }
-
-                xhr.upload.onprogress = function (event) {
-                    if (event.lengthComputable) {
-                        const percentComplete = (event.loaded / event.total) * 100
-                        onProgress(percentComplete.toFixed(2))
-                    }
-                }
-                xhr.send(binaryData)
-
-            } catch (error) {
-                console.error('OTA 上传失败:', error)
                 setTimeout(() => progressRef.value.hide(), 500)
             }
+
+            xhr.onerror = function () {
+                toast(t('config.ota_error'), 'error')
+                setTimeout(() => progressRef.value.hide(), 500)
+            }
+
+            xhr.ontimeout = function () {
+                console.error('请求超时')
+                setTimeout(() => progressRef.value.hide(), 500)
+            }
+
+            xhr.upload.onprogress = function (event) {
+                if (event.lengthComputable) {
+                    const percentComplete = (event.loaded / event.total) * 100
+                    onProgress(percentComplete.toFixed(2))
+                }
+            }
+            xhr.send(binaryData)
+
+
         }
 
         reader.readAsArrayBuffer(file)

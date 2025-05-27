@@ -110,9 +110,17 @@ export const useDefaultStore = defineStore('default', () => {
         ws_send_buf_size: 0,
         msg_buf_recv_size: 0,
         msg_buf_send_size: 0,
+
         broker_address_uri: "",
         mqtt_client_id: "",
         mqtt_topic: "",
+
+        ha_broker_address: "",
+        ha_broker_username: "",
+        ha_broker_password: "",
+        ha_entity_name: "",
+        ha_unique_id: "",
+        ha_discovery_prefix: ""
     })
 
     return {

@@ -98,7 +98,7 @@ export default {
         reboot: "重启",
         ota: "固件升级",
         ota_success: "固件升级成功，等待重启",
-
+        ota_error: "固件升级失败",
         pwm_gpio_num: "输出 GPIO 引脚",
         key_gpio_num: "按键 GPIO 引脚",
         light: "灯光设置",
@@ -120,6 +120,15 @@ export default {
         addr: "服务器地址",
         client_id: "客户端 ID",
         topic: "主题",
+
+        ha: "Home Assistant 设置",
+        username: "用户名",
+        password: "密码",
+        ha_entity_name: "实体名称",
+        ha_unique_id: "唯一 ID",
+        ha_discovery_prefix: "发现前缀",
+        register: "注册实体",
+        remove: "移除实体",
 
         other: "其他设置",
         ws_user: "WebSocket 用户名",
