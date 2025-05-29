@@ -99,6 +99,7 @@ export default {
         ota: "固件升级",
         ota_success: "固件升级成功，等待重启",
         ota_error: "固件升级失败",
+
         pwm_gpio_num: "输出 GPIO 引脚",
         key_gpio_num: "按键 GPIO 引脚",
         light: "灯光设置",
@@ -131,6 +132,7 @@ export default {
         remove: "移除实体",
 
         other: "其他设置",
+        button_period_ms: "按键长按周期(ms)",
         ws_user: "WebSocket 用户名",
         ws_pass: "WebSocket 密码",
         mdns: "mDNS 名称",

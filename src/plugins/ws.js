@@ -19,10 +19,12 @@ class QuestBody {
 
 class WebSocketManager {
 
-    init(url) {
-        this.url = url
+    constructor() {
+        this.url = ''
         this.ws = null
-
+        this.reconnectLock = false
+        this.reconnectTimer = null
+        this.init_timeIntervalObj = null
         this.heartCheck = {
             timeout: 10000,
             timeoutObj: null,
@@ -35,17 +37,19 @@ class WebSocketManager {
             start: () => {
                 this.heartCheck.timeoutObj = setTimeout(() => {
                     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-                        this.ws.send(JSON.stringify({ type: "ping", param: '' })) // 发送心跳包
+                        this.ws.send(JSON.stringify({ type: "ping", param: '' }))
                         this.heartCheck.serverTimeoutObj = setTimeout(() => {
-                            this.ws.close() // 关闭 WebSocket
+                            this.ws.close()
                         }, this.heartCheck.timeout)
                     }
                 }, this.heartCheck.timeout)
-            },
+            }
         }
+    }
 
-
-        this.connect()
+    async init(url) {
+        this.url = url
+        await this.connect()
     }
 
     async connect() {
@@ -57,11 +61,12 @@ class WebSocketManager {
         this.ws.binaryType = "arraybuffer"
 
         toast(t('toast.loading'), 'info')
-        let time_interval_obj
         default_store.device_info.cpu_freq = 0
-        time_interval_obj = setInterval(() => {
+
+        this.init_timeIntervalObj = setInterval(() => {
             if (default_store.device_info.cpu_freq && default_store.user_config.username) {
-                clearInterval(time_interval_obj)
+                clearInterval(this.init_timeIntervalObj)
+                this.init_timeIntervalObj = null
                 return
             }
 
@@ -69,7 +74,6 @@ class WebSocketManager {
                 this.get_device_info()
                 this.get_user_config()
             }
-
         }, 2000)
 
         this.ws.onopen = () => {
@@ -136,10 +140,14 @@ class WebSocketManager {
     }
 
     reconnect() {
-        setTimeout(() => {
+        if (this.reconnectLock) return
+        this.reconnectLock = true
+
+        this.reconnectTimer = setTimeout(() => {
+            this.reconnectLock = false
             console.log("正在重连...")
             this.connect()
-        }, 5000) // 10秒后重连
+        }, 3000)
     }
 
     sendMessage(message) {
@@ -165,12 +173,22 @@ class WebSocketManager {
             this.ws.onmessage = null
             this.ws.onclose = null
             this.ws.onerror = null
-            this.ws.close() // 关闭 WebSocket
+            this.ws.close()
+            this.ws = null
         }
 
         clearTimeout(this.heartCheck.timeoutObj)
         clearTimeout(this.heartCheck.serverTimeoutObj)
-        this.ws = null
+
+        if (this.init_timeIntervalObj) {
+            clearInterval(this.init_timeIntervalObj)
+            this.init_timeIntervalObj = null
+        }
+
+        if (this.reconnectTimer) {
+            clearTimeout(this.reconnectTimer)
+            this.reconnectTimer = null
+        }
 
         console.log("WebSocketManager 资源清理完毕")
     }

@@ -48,10 +48,10 @@ const enable_dev_mode = async () => {
     </div>
 
     <div
-      class="flex flex-wrap items-center"
+      class="flex flex-wrap items-center cursor-pointer select-none"
       @click="enable_dev_mode"
     >
-      <span class="font-semibold mr-2 w-40 cursor-pointer select-none">
+      <span class="font-semibold mr-2 w-40">
         {{ $t('about.firmware_version') }}:
       </span>
       <span>{{ default_store.device_info.firmware_version }}</span>

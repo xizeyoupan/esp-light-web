@@ -77,10 +77,13 @@
           <span>{{ default_store.user_config.brightness_input }}</span>
         </div>
 
-        <div class="grid grid-cols-[150px_1fr_auto] items-center gap-2">
+        <div
+          v-if="default_store.device_info.dev_mode"
+          class="grid grid-cols-[150px_1fr_auto] items-center gap-2"
+        >
           <label>{{ t('config.freq') }}</label>
           <input
-            v-model="default_store.user_config.frequency"
+            v-model.number="default_store.user_config.frequency"
             type="number"
             class="border rounded px-2 py-1 w-full"
             step="1000"
@@ -88,7 +91,10 @@
           >
         </div>
 
-        <div class="grid grid-cols-[150px_1fr_auto] items-center gap-2">
+        <div
+          v-if="default_store.device_info.dev_mode"
+          class="grid grid-cols-[150px_1fr_auto] items-center gap-2"
+        >
           <label>{{ t('config.pwm_min') }}</label>
           <input
             v-model.number="default_store.user_config.pwm_duty_min"
@@ -100,7 +106,10 @@
           <span>{{ default_store.user_config.pwm_duty_min }}</span>
         </div>
 
-        <div class="grid grid-cols-[150px_1fr_auto] items-center gap-2">
+        <div
+          v-if="default_store.device_info.dev_mode"
+          class="grid grid-cols-[150px_1fr_auto] items-center gap-2"
+        >
           <label>{{ t('config.pwm_max') }}</label>
           <input
             v-model.number="default_store.user_config.pwm_duty_max"
@@ -283,7 +292,10 @@
         {{ t('config.other') }}
       </h3>
       <div class="space-y-2 mt-2">
-        <div class="flex items-center justify-between">
+        <div
+          v-if="default_store.device_info.dev_mode"
+          class="flex items-center justify-between"
+        >
           <label>{{ t(`config.pwm_gpio_num`) }}</label>
           <input
             v-model="default_store.user_config.pwm_gpio_num"
@@ -291,7 +303,10 @@
           >
         </div>
 
-        <div class="flex items-center justify-between">
+        <div
+          v-if="default_store.device_info.dev_mode"
+          class="flex items-center justify-between"
+        >
           <label>{{ t(`config.key_gpio_num`) }}</label>
           <input
             v-model="default_store.user_config.key_gpio_num"
@@ -300,6 +315,21 @@
         </div>
 
         <div class="flex items-center justify-between">
+          <label>{{ t(`config.button_period_ms`) }}</label>
+          <input
+            v-model.number="default_store.user_config.button_period_ms"
+            class="border rounded px-2 py-1 w-64"
+            min="500"
+            max="10000"
+            type="number"
+            step="100"
+          >
+        </div>
+
+        <div
+          v-if="default_store.device_info.dev_mode"
+          class="flex items-center justify-between"
+        >
           <label>{{ t(`config.ws_user`) }}</label>
           <input
             v-model="default_store.user_config.username"
@@ -307,7 +337,10 @@
           >
         </div>
 
-        <div class="flex items-center justify-between">
+        <div
+          v-if="default_store.device_info.dev_mode"
+          class="flex items-center justify-between"
+        >
           <label>{{ t(`config.ws_pass`) }}</label>
           <input
             v-model="default_store.user_config.password"
@@ -316,7 +349,10 @@
           >
         </div>
 
-        <div class="flex items-center justify-between">
+        <div
+          v-if="default_store.device_info.dev_mode"
+          class="flex items-center justify-between"
+        >
           <label>{{ t(`config.mdns`) }}</label>
           <input
             v-model="default_store.user_config.mdns_host_name"
@@ -324,7 +360,10 @@
           >
         </div>
 
-        <div class="flex items-center justify-between">
+        <div
+          v-if="default_store.device_info.dev_mode"
+          class="flex items-center justify-between"
+        >
           <label>{{ t(`config.wifi_ap_name`) }}</label>
           <input
             v-model="default_store.user_config.wifi_ap_ssid"
@@ -332,7 +371,10 @@
           >
         </div>
 
-        <div class="flex items-center justify-between">
+        <div
+          v-if="default_store.device_info.dev_mode"
+          class="flex items-center justify-between"
+        >
           <label>{{ t(`config.wifi_ap_pass`) }}</label>
           <input
             v-model="default_store.user_config.wifi_ap_pass"
@@ -376,7 +418,10 @@
           >
         </div>
 
-        <div class="flex items-center justify-between">
+        <div
+          v-if="default_store.device_info.dev_mode"
+          class="flex items-center justify-between"
+        >
           <label>{{ t(`config.ws_recv_max`) }}</label>
           <input
             v-model="default_store.user_config.ws_recv_buf_size"
@@ -385,7 +430,10 @@
           >
         </div>
 
-        <div class="flex items-center justify-between">
+        <div
+          v-if="default_store.device_info.dev_mode"
+          class="flex items-center justify-between"
+        >
           <label>{{ t(`config.ws_send_max`) }}</label>
           <input
             v-model="default_store.user_config.ws_send_buf_size"
@@ -394,7 +442,10 @@
           >
         </div>
 
-        <div class="flex items-center justify-between">
+        <div
+          v-if="default_store.device_info.dev_mode"
+          class="flex items-center justify-between"
+        >
           <label>{{ t(`config.ws_recv_queue`) }}</label>
           <input
             v-model="default_store.user_config.msg_buf_recv_size"
@@ -403,7 +454,10 @@
           >
         </div>
 
-        <div class="flex items-center justify-between">
+        <div
+          v-if="default_store.device_info.dev_mode"
+          class="flex items-center justify-between"
+        >
           <label>{{ t(`config.ws_send_queue`) }}</label>
           <input
             v-model="default_store.user_config.msg_buf_send_size"

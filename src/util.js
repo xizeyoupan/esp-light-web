@@ -30,6 +30,7 @@ export const connect_device = async () => {
         fetch_pool.push(get_host(`http://${default_store.wifi_info.custom_address}/whoami`))
     } else {
         fetch_pool.push(get_host(`http://${default_mdns_host_name}/whoami`))
+        fetch_pool.push(get_host(`http://${default_mdns_host_name}.local/whoami`))
         fetch_pool.push(get_host("http://192.168.4.1/whoami"))
     }
     try {
@@ -62,7 +63,7 @@ export const sleep_ms = async (ms) => {
 
 export const get_mdns_host_name = async () => {
     const host = await get('mdns_host_name')
-    return host || default_store.user_config.mdns_host_name || 'esp-light'
+    return host || default_store.user_config.mdns_host_name || 'esplight'
 }
 
 export const set_mdns_host_name = async (host_name) => {

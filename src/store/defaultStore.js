@@ -120,7 +120,9 @@ export const useDefaultStore = defineStore('default', () => {
         ha_broker_password: "",
         ha_entity_name: "",
         ha_unique_id: "",
-        ha_discovery_prefix: ""
+        ha_discovery_prefix: "",
+
+        button_period_ms: 0,
     })
 
     return {
